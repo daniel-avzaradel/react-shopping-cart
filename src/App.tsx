@@ -21,9 +21,8 @@ export type CartItemType = {
   amount: number;
 };
 
-const getProducts = async (): Promise<CartItemType[]> => {
-  return await (await fetch('https://fakestoreapi.com/products')).json();
-};
+const getProducts = async (): Promise<CartItemType[]> =>
+  await (await fetch('https://fakestoreapi.com/products')).json();
 
 const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
@@ -35,14 +34,40 @@ const App = () => {
   console.log(data);
 
   const getTotalItems = (items: CartItemType[]) =>
-    items.reduce((acc: number, item) => acc + item.amount, 0);
+    items.reduce((ack: number, item) => ack + item.amount, 0);
 
-  const handleAddToCart = (clickedItem: CartItemType) => null;
+  const handleAddToCart = (clickedItem: CartItemType) => {
+    setCartItems((prev) => {
+      // 1. Is the item already added in the cart?
+      const isItemInCart = prev.find((item) => item.id === clickedItem.id);
 
-  const handleRemoveFromCart = () => null;
+      if (isItemInCart) {
+        return prev.map((item) =>
+          item.id === clickedItem.id
+            ? { ...item, amount: item.amount + 1 }
+            : item
+        );
+      }
+      // First time the item is added
+      return [...prev, { ...clickedItem, amount: 1 }];
+    });
+  };
 
-  if (isLoading) return <LinearProgress></LinearProgress>;
-  if (error) return <div>Something went wrong!</div>;
+  const handleRemoveFromCart = (id: number) => {
+    setCartItems((prev) =>
+      prev.reduce((ack, item) => {
+        if (item.id === id) {
+          if (item.amount === 1) return ack;
+          return [...ack, { ...item, amount: item.amount - 1 }];
+        } else {
+          return [...ack, item];
+        }
+      }, [] as CartItemType[])
+    );
+  };
+
+  if (isLoading) return <LinearProgress />;
+  if (error) return <div>Something went wrong ...</div>;
 
   return (
     <Wrapper>
@@ -55,17 +80,15 @@ const App = () => {
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>
         <Badge badgeContent={getTotalItems(cartItems)} color="error">
-          <ShoppingCartIcon></ShoppingCartIcon>
+          <ShoppingCartIcon />
         </Badge>
       </StyledButton>
       <Grid container spacing={3}>
-        {data?.map((item) => {
-          return (
-            <Grid item key={item.id} xs={12} sm={4}>
-              <Item item={item} handleAddToCart={handleAddToCart} />
-            </Grid>
-          );
-        })}
+        {data?.map((item) => (
+          <Grid item key={item.id} xs={12} sm={4}>
+            <Item item={item} handleAddToCart={handleAddToCart} />
+          </Grid>
+        ))}
       </Grid>
     </Wrapper>
   );
