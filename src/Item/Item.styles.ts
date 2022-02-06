@@ -14,6 +14,7 @@ export const Wrapper = styled.div`
     border: none;
     cursor: pointer;
     padding: 10px;
+    background-color: aliceblue;
   }
 
   img {
@@ -24,7 +25,7 @@ export const Wrapper = styled.div`
 
   div {
     font-family: Arial, Helvetica, sans-serif;
-    padding: 2rem;
+    padding: 1rem 2rem;
     height: 100%;
   }
 `;
