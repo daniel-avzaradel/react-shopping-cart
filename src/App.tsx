@@ -5,6 +5,7 @@ import { useQuery } from 'react-query';
 import { Item } from './Item/Item';
 import { Drawer, LinearProgress, Grid, Badge } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import Cart from './Cart/Cart';
 
 //styles
 import { Wrapper, StyledButton } from './App.styles';
@@ -15,7 +16,7 @@ export type CartItemType = {
   category: string;
   description: string;
   image: string;
-  price: string;
+  price: number;
   title: string;
   amount: number;
 };
@@ -33,7 +34,8 @@ const App = () => {
   );
   console.log(data);
 
-  const getTotalItems = (items: CartItemType[]) => null;
+  const getTotalItems = (items: CartItemType[]) =>
+    items.reduce((acc: number, item) => acc + item.amount, 0);
 
   const handleAddToCart = (clickedItem: CartItemType) => null;
 
@@ -45,10 +47,16 @@ const App = () => {
   return (
     <Wrapper>
       <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
-        Cart Goes Here
+        <Cart
+          cartItems={cartItems}
+          addToCart={handleAddToCart}
+          removeFromCart={handleRemoveFromCart}
+        />
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>
-        <Badge badgeContent={getTotalItems(cartItems)} color="error"></Badge>
+        <Badge badgeContent={getTotalItems(cartItems)} color="error">
+          <ShoppingCartIcon></ShoppingCartIcon>
+        </Badge>
       </StyledButton>
       <Grid container spacing={3}>
         {data?.map((item) => {

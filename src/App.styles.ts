@@ -1,15 +1,14 @@
 import styled from 'styled-components';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import IconButton from '@mui/material/IconButton';
 
 export const Wrapper = styled.div`
-  margin: 40px;
+  margin: 0 20px;
 `;
 
-export const StyledButton = styled(ShoppingCartIcon)`
+export const StyledButton = styled(IconButton)`
   position: fixed;
+  float: right;
   z-index: 100;
   right: 20px;
   top: 20px;
-  width: 40px;
-  height: 40px;
 `;
